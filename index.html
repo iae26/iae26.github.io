@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="IAE: Interpolative Autoencoder for Improving Latent Continuity in Audio Generation. Speech, music, sound, and latent interpolation demos.">
+  <meta name="theme-color" content="#245d49">
+  <title>IAE · Interpolative Autoencoder</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="assets/data.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <nav class="nav wrap" aria-label="Main navigation">
+      <a class="brand" href="#" aria-label="IAE home"><svg viewBox="0 0 32 25" aria-hidden="true"><path d="M3 12h3m3-7v15m5-18v21m5-16v11m5-8v5m4-3h2"/></svg>IAE<span class="brand-sub">AUDIO RESEARCH</span></a>
+      <div class="nav-links"><a href="#abstract">Abstract</a><a href="#framework">Method</a><a href="#generation">Generation</a><a href="#tokenizer">Interpolation</a><a href="assets/paper.pdf" target="_blank" rel="noopener">Paper ↗</a></div>
+    </nav>
+  </header>
+  <main id="main">
+    <section class="hero wrap">
+      <p class="eyebrow"><span class="status-dot"></span> ANONYMOUS RESEARCH DEMO</p>
+      <h1><span class="title-accent">IAE:</span> Interpolative Autoencoder<br class="desktop-break"> for Improving Latent Continuity<br class="desktop-break"> in Audio Generation</h1>
+      <p class="hero-description">Learning to decode between neighboring representations.<br>Explore the results in speech, music, and environmental sound.</p>
+      <div class="hero-bottom"><span>Speech</span><i></i><span>Music</span><i></i><span>Environmental sound</span></div>
+    </section>
+
+    <section id="abstract" class="section wrap abstract-section">
+      <div class="section-label"><span>01</span> THE IDEA</div>
+      <div class="abstract-layout"><h2>Abstract</h2><div class="abstract-copy">
+        <p>Diffusion Transformer (DiT) based audio generation relies on a pretrained autoencoder to map audio into a latent space, where the latent quality directly influences generation performance. Recent work has significantly improved the semantic structuring of representations through distillation or downstream tasks. However, representation continuity has seen little further progress. Continuity matters because the decoder must robustly reconstruct generation-biased latent caused by imperfect training or sampling of DiT. Existing continuity methods still rely on fixed-magnitude Gaussian noise injection or early KL regularization, both of which may reduce reconstruction fidelity when decoding biased latent, thereby degrading final generation quality.</p>
+        <p>In this paper, we propose the <strong>Interpolative Autoencoder (IAE)</strong>, which preserves the semantic structure of the pretrained encoder while improving representation continuity through semantic reconstruction on latent-pair interpolations rather than single-point perturbation. IAE pairs each latent with its nearest neighbor in the current encoding distribution and imposes semantic reconstruction supervision at interpolation points between pairs. This design allows the noise magnitude to adapt according to the semantic structure around each sample’s neighborhood, effectively filling low-density regions between neighboring samples and alleviating the problem of decoding generation-biased latent.</p>
+        <p>From an optimization perspective, IAE is essentially optimizing the interpolated Fréchet Audio Distance (iFAD) indirectly. This metric has been shown in the image domain to assess the structuring and continuity of the latent space at the representation learning stage and to correlate significantly with final generation quality. Experimental results confirm this connection. Compared with existing RAE and VAE variant baselines, IAE achieves a lower iFAD while also obtaining better gFAD and WER on audio generation tasks, demonstrating that by improving representation continuity IAE can tangibly enhance generation quality.</p>
+      </div></div>
+    </section>
+
+    <section id="framework" class="section wrap">
+      <div class="section-label"><span>02</span> THE FRAMEWORK</div>
+      <div class="section-heading"><h2>Supervision between neighbors.</h2><p>A training-time interpolation branch, guided by a frozen semantic encoder.</p></div>
+      <figure class="framework"><a href="assets/framework.png" target="_blank" rel="noopener" aria-label="Open framework figure at full resolution"><img src="assets/framework.png" width="2400" height="1222" alt="IAE framework: a trainable encoder produces clean latents, a FIFO queue supplies nearest neighbors, and the decoder reconstructs clean and interpolated latents. A frozen semantic encoder supervises both outputs while a teacher anchors the clean representation."></a><figcaption><strong>Figure 1.</strong> Each encoding is paired with its nearest neighbor from a queue of recent encodings. Randomly sampled interpolants receive semantic supervision; clean encodings retain acoustic reconstruction and encoder anchoring. <span>Click to enlarge ↗</span></figcaption></figure>
+    </section>
+
+    <div class="demo-background">
+      <section id="generation" class="section wrap">
+        <div class="section-label"><span>03</span> LISTEN & COMPARE</div>
+        <div class="section-heading"><h2>From text to audio.</h2><p>The same text condition. Five audio generation systems.</p></div>
+        <div class="controls-row"><div class="segmented" id="generation-domain" role="group" aria-label="Generation domain"></div><span class="quiet-note">Headphones recommended · one track plays at a time</span></div>
+        <div id="generation-content" class="demo-panel"></div>
+        <p class="section-note">Selected examples are curated to illustrate IAE’s strengths, rather than randomly sampled. <a href="#diagnostics">Challenging cases</a> are retained below. These demos are not a listening-test result.</p>
+      </section>
+    </div>
+
+    <section id="tokenizer" class="section wrap">
+      <div class="section-label"><span>04</span> INSIDE THE LATENT SPACE</div>
+      <div class="section-heading"><h2>Listen between the endpoints.</h2><p>Compare clean reconstruction and midpoint decoding, including the new semantic-supervision controls.</p></div>
+      <div class="controls-row"><div class="segmented" id="tokenizer-domain" role="group" aria-label="Tokenizer domain"></div><div class="segmented subtle" id="tokenizer-mode" role="group" aria-label="Tokenizer comparison"><button type="button" data-mode="interpolation" aria-pressed="true">Interpolation</button><button type="button" data-mode="reconstruction" aria-pressed="false">Clean reconstruction</button></div></div>
+      <div id="tokenizer-content" class="demo-panel"></div>
+      <p class="section-note">Each tokenizer retrieves its own neighbor from the frozen evaluation pool. This is a model-specific nearest-neighbor comparison, not a fixed-pair experiment. Available interpolation positions: α = 0 and 0.5.</p>
+    </section>
+
+    <section id="diagnostics" class="section wrap diagnostic-section">
+      <div class="section-label"><span>05</span> A CLOSER LOOK</div>
+      <div class="section-heading"><h2>Challenging cases.</h2><p>Retained unfavorable examples make the limits of the method audible.</p></div>
+      <div class="controls-row"><div class="segmented" id="diagnostic-domain" role="group" aria-label="Challenging case domain"></div><div class="segmented subtle" id="diagnostic-mode" role="group" aria-label="Challenging case type"><button type="button" data-mode="generation" aria-pressed="true">Generation</button><button type="button" data-mode="interpolation" aria-pressed="false">Interpolation</button></div></div>
+      <div id="diagnostic-content" class="demo-panel"></div>
+    </section>
+
+  </main>
+  <footer class="wrap"><a class="footer-brand" href="#">IAE<span>Interpolative Autoencoder</span></a><span>Anonymous research demo</span><a href="assets/paper.pdf" target="_blank" rel="noopener">Paper ↗</a></footer>
+  <div id="player-status" class="sr-only" role="status" aria-live="polite"></div>
+  <noscript><p class="noscript">Enable JavaScript to browse and play the audio comparisons.</p></noscript>
+</body>
+</html>
