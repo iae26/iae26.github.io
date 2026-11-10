@@ -48,7 +48,7 @@
         <div class="section-heading"><h2>From text to audio.</h2><p>The same text condition. Five audio generation systems.</p></div>
         <div class="controls-row"><div class="segmented" id="generation-domain" role="group" aria-label="Generation domain"></div><span class="quiet-note">Headphones recommended · one track plays at a time</span></div>
         <div id="generation-content" class="demo-panel"></div>
-        <p class="section-note">Selected examples are curated to illustrate IAE’s strengths, rather than randomly sampled. <a href="#diagnostics">Challenging cases</a> are retained below. These demos are not a listening-test result.</p>
+        <p class="section-note">Selected examples are curated to illustrate IAE’s strengths, rather than randomly sampled. These demos are not a listening-test result.</p>
       </section>
     </div>
 
@@ -58,13 +58,6 @@
       <div class="controls-row"><div class="segmented" id="tokenizer-domain" role="group" aria-label="Tokenizer domain"></div><div class="segmented subtle" id="tokenizer-mode" role="group" aria-label="Tokenizer comparison"><button type="button" data-mode="interpolation" aria-pressed="true">Interpolation</button><button type="button" data-mode="reconstruction" aria-pressed="false">Clean reconstruction</button></div></div>
       <div id="tokenizer-content" class="demo-panel"></div>
       <p class="section-note">Each tokenizer retrieves its own neighbor from the frozen evaluation pool. This is a model-specific nearest-neighbor comparison, not a fixed-pair experiment. Available interpolation positions: α = 0 and 0.5.</p>
-    </section>
-
-    <section id="diagnostics" class="section wrap diagnostic-section">
-      <div class="section-label"><span>05</span> A CLOSER LOOK</div>
-      <div class="section-heading"><h2>Challenging cases.</h2><p>Retained unfavorable examples make the limits of the method audible.</p></div>
-      <div class="controls-row"><div class="segmented" id="diagnostic-domain" role="group" aria-label="Challenging case domain"></div><div class="segmented subtle" id="diagnostic-mode" role="group" aria-label="Challenging case type"><button type="button" data-mode="generation" aria-pressed="true">Generation</button><button type="button" data-mode="interpolation" aria-pressed="false">Interpolation</button></div></div>
-      <div id="diagnostic-content" class="demo-panel"></div>
     </section>
 
   </main>
